@@ -39,7 +39,7 @@ int main() {
 
     sockaddr_in serverAddr{};
     serverAddr.sin_family = AF_INET;
-    serverAddr.sin_port = htons(5050);
+    serverAddr.sin_port = htons(5051);
     serverAddr.sin_addr.s_addr = INADDR_ANY;
 
     if(bind(listenSock, (sockaddr*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) {
@@ -56,7 +56,7 @@ int main() {
         return 1;
     }
 
-    std::cout << "Servidor aguardando conexão na porta 5050...\n";
+    std::cout << "Servidor aguardando conexão na porta 5051...\n";
 
     SOCKET clientSock = accept(listenSock, nullptr, nullptr);
     if(clientSock == INVALID_SOCKET) {
