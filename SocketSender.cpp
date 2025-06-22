@@ -24,7 +24,7 @@ void SendCandleData(double open, double high, double low, double close)
     // Define IP e porta do servidor
     sockaddr_in serverAddr;
     serverAddr.sin_family = AF_INET;
-    serverAddr.sin_port = htons(5050); // Porta do servidor
+    serverAddr.sin_port = htons(5051); // Porta do servidor
     serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1"); // IP do servidor (localhost)
 
     // Conecta ao servidor
