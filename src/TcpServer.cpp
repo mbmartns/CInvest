@@ -1,8 +1,7 @@
 #include "..\include\TcpServer.hpp"
 #include <iostream>
-#include <thread>
 
-TcpServer::TcpServer(int port) : port(port), listenSock(INVALID_SOCKET), clientSock(INVALID_SOCKET), running(false) {}
+TcpServer::TcpServer(int port) : port(port) {}
 
 TcpServer::~TcpServer() {
     stop();
@@ -10,14 +9,7 @@ TcpServer::~TcpServer() {
 
 bool TcpServer::initWinSock() {
     WSADATA wsaData;
-    int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
-    return result == 0;
-}
-
-void TcpServer::cleanup() {
-    if (clientSock != INVALID_SOCKET) closesocket(clientSock);
-    if (listenSock != INVALID_SOCKET) closesocket(listenSock);
-    WSACleanup();
+    return WSAStartup(MAKEWORD(2, 2), &wsaData) == 0;
 }
 
 bool TcpServer::start() {
@@ -34,40 +26,34 @@ bool TcpServer::start() {
     if (bind(listenSock, (sockaddr*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) return false;
     if (listen(listenSock, SOMAXCONN) == SOCKET_ERROR) return false;
 
-    running = true;
-    serverThread = std::thread(&TcpServer::runServerLoop, this);
+    std::cout << "Servidor TCP aguardando conexão na porta " << port << "...\n";
+
+    clientSock = accept(listenSock, nullptr, nullptr);
+    if (clientSock == INVALID_SOCKET) {
+        return false;
+    }
+
+    std::cout << "Cliente conectado!\n";
     return true;
 }
 
-void TcpServer::runServerLoop() {
-    sockaddr_in clientAddr{};
-    int clientAddrLen = sizeof(clientAddr);
-    clientSock = accept(listenSock, (sockaddr*)&clientAddr, &clientAddrLen);
-    if (clientSock == INVALID_SOCKET) return;
-
+std::string TcpServer::receiveMessage() {
     char buffer[512];
-    int bytesReceived;
-
-    while (running) {
-        bytesReceived = recv(clientSock, buffer, sizeof(buffer) - 1, 0);
-        if (bytesReceived > 0) {
-            buffer[bytesReceived] = '\0';
-            if (messageCallback) messageCallback(std::string(buffer));
-        } else {
-            break;
-        }
+    int bytesReceived = recv(clientSock, buffer, sizeof(buffer) - 1, 0);
+    if (bytesReceived > 0) {
+        buffer[bytesReceived] = '\0';
+        return std::string(buffer);
+    } else {
+        return "";
     }
-
-    running = false;
-    cleanup();
 }
 
 void TcpServer::stop() {
-    running = false;
-    if (serverThread.joinable()) serverThread.join();
-    cleanup();
+    if (clientSock != INVALID_SOCKET) closesocket(clientSock);
+    if (listenSock != INVALID_SOCKET) closesocket(listenSock);
+    WSACleanup();
 }
 
-void TcpServer::setMessageCallback(MessageCallback cb) {
-    messageCallback = cb;
+void TcpServer::cleanup() {
+    stop();
 }

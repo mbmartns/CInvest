@@ -72,8 +72,8 @@ public:
         oss << "\nCandlestick Info:\n";
         oss << "  - Abertura:        " << open << "\n";
         oss << "  - Fechamento:      " << close << "\n";
-        oss << "  - Máxima:          " << high << "\n";
-        oss << "  - Mínima:          " << low << "\n";
+        oss << "  - Maxima:          " << high << "\n";
+        oss << "  - Minima:          " << low << "\n";
         oss << "  - Corpo:           " << bodySize() << "\n";
         oss << "  - Sombra Superior: " << upperShadow() << " (" << upperShadowPercent() << "%)\n";
         oss << "  - Sombra Inferior: " << lowerShadow() << " (" << lowerShadowPercent() << "%)\n";
