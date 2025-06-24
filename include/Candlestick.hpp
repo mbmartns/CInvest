@@ -1,4 +1,4 @@
-// Candlestick.hpp
+// include/Candlestick.hpp
 #pragma once
 
 #include <string>
@@ -6,6 +6,7 @@
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
+using namespace std;
 
 
 // Classe base que representa um candle com todas as suas propriedades fundamentais
@@ -68,7 +69,7 @@ public:
     std::string describe() const {
         std::ostringstream oss;
         oss << std::fixed << std::setprecision(5);
-        oss << "\n📊 Candlestick Info:\n";
+        oss << "\nCandlestick Info:\n";
         oss << "  - Abertura:        " << open << "\n";
         oss << "  - Fechamento:      " << close << "\n";
         oss << "  - Máxima:          " << high << "\n";

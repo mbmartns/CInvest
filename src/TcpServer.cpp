@@ -1,13 +1,8 @@
-#define _WIN32_WINNT 0x0600
-#include <winsock2.h>
-#include <windows.h>
-#include <ws2tcpip.h>
-#include <thread> // Adicionado
-
-#include "C:\Users\Joao_\Desktop\Programação\Cinvest\CInvest\include\TcpServer.hpp"
+#include "..\include\TcpServer.hpp"
 #include <iostream>
+#include <thread>
 
-TcpServer::TcpServer(int port) : port(port), listenSock_(INVALID_SOCKET), clientSock(INVALID_SOCKET), running(false) {}
+TcpServer::TcpServer(int port) : port(port), listenSock(INVALID_SOCKET), clientSock(INVALID_SOCKET), running(false) {}
 
 TcpServer::~TcpServer() {
     stop();
@@ -21,23 +16,23 @@ bool TcpServer::initWinSock() {
 
 void TcpServer::cleanup() {
     if (clientSock != INVALID_SOCKET) closesocket(clientSock);
-    if (listenSock_ != INVALID_SOCKET) closesocket(listenSock_);
+    if (listenSock != INVALID_SOCKET) closesocket(listenSock);
     WSACleanup();
 }
 
 bool TcpServer::start() {
     if (!initWinSock()) return false;
 
-    listenSock_ = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-    if (listenSock_ == INVALID_SOCKET) return false;
+    listenSock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (listenSock == INVALID_SOCKET) return false;
 
     sockaddr_in serverAddr{};
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_port = htons(port);
     serverAddr.sin_addr.s_addr = INADDR_ANY;
 
-    if (bind(listenSock_, (sockaddr*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) return false;
-    if (listen(listenSock_, SOMAXCONN) == SOCKET_ERROR) return false;
+    if (bind(listenSock, (sockaddr*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) return false;
+    if (listen(listenSock, SOMAXCONN) == SOCKET_ERROR) return false;
 
     running = true;
     serverThread = std::thread(&TcpServer::runServerLoop, this);
@@ -45,9 +40,9 @@ bool TcpServer::start() {
 }
 
 void TcpServer::runServerLoop() {
-    sockaddr_in clientAddr;
+    sockaddr_in clientAddr{};
     int clientAddrLen = sizeof(clientAddr);
-    clientSock = accept(listenSock_, (sockaddr*)&clientAddr, &clientAddrLen);
+    clientSock = accept(listenSock, (sockaddr*)&clientAddr, &clientAddrLen);
     if (clientSock == INVALID_SOCKET) return;
 
     char buffer[512];

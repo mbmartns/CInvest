@@ -1,4 +1,5 @@
 #pragma once
+
 #ifndef _WIN32_WINNT
 #define _WIN32_WINNT 0x0600
 #endif
@@ -11,13 +12,7 @@
 #include <functional>
 #include <thread>
 
-#include <string>
-#include <functional>
-#include <thread>
-#include <winsock2.h>
-#include <ws2tcpip.h>
-
-#pragma comment(lib, "ws232.lib")
+#pragma comment(lib, "ws2_32.lib")
 
 class TcpServer {
 public:
@@ -33,7 +28,7 @@ public:
 
 private:
     int port;
-    SOCKET listenSock_ = INVALID_SOCKET;
+    SOCKET listenSock = INVALID_SOCKET;
     SOCKET clientSock = INVALID_SOCKET;
     std::thread serverThread;
     bool running = false;
