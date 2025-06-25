@@ -67,6 +67,16 @@ public:
         return (body > 0) ? (lowerShadow() / body) * 100.0 : 0.0;
     }
 
+
+    // Novo método estático para imprimir lista de candles
+    static void printList(const std::vector<std::unique_ptr<Candlestick>>& candles) {
+        std::cout << "=== Lista de Candles armazenados ===\n";
+        for (size_t i = 0; i < candles.size(); ++i) {
+            std::cout << "Candlestick #" << (i + 1) << candles[i]->describe() << "\n";
+        }
+    }
+
+    
     // Retorna uma string com todas as informações do candle formatadas
     std::string describe() const {
         std::ostringstream oss;

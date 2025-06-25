@@ -1,5 +1,7 @@
 #include <iostream>
 #include <sstream>
+#include <vector>
+#include <memory>
 #include "..\include\TcpServer.hpp"
 #include "..\include\Candlestick.hpp"
 
@@ -20,6 +22,8 @@ int main() {
         return 1;
     }
 
+    std::vector<std::unique_ptr<Candlestick>> candles;
+
     while (true) {
         std::string msg = server.receiveMessage();
         if (msg.empty()) {
@@ -29,7 +33,11 @@ int main() {
 
         try {
             Candlestick candle = parseCandle(msg);
-            std::cout << candle.describe();
+            candles.push_back(std::make_unique<Candlestick>(candle));
+
+            // Agora usamos o método estático para imprimir
+            Candlestick::printList(candles);
+
         } catch (const std::exception& e) {
             std::cerr << "Erro ao processar candle: " << e.what() << "\n";
         }
