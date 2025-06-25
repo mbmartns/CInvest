@@ -11,8 +11,11 @@ include_directories(include)
 add_executable(CandleTCP
     src/main.cpp
     src/TcpServer.cpp
-    src/PatternDetector.cpp  
+    src/PatternDetector.cpp
+    src/AppController.cpp
+    src/Candlestick.cpp    # só se você tiver um arquivo cpp separado para Candlestick
 )
 
 # Biblioteca do Windows para sockets
 target_link_libraries(CandleTCP ws2_32)
+
