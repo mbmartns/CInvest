@@ -11,6 +11,7 @@ include_directories(include)
 add_executable(CandleTCP
     src/main.cpp
     src/TcpServer.cpp
+    src/PatternDetector.cpp  
 )
 
 # Biblioteca do Windows para sockets

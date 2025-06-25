@@ -4,6 +4,8 @@
 #include <memory>
 #include "..\include\TcpServer.hpp"
 #include "..\include\Candlestick.hpp"
+#include "..\include\PatternDetector.hpp"
+#include "..\include\patterns\HangingManPattern.hpp"
 
 Candlestick parseCandle(const std::string& message) {
     std::istringstream iss(message);
@@ -24,6 +26,10 @@ int main() {
 
     std::vector<std::unique_ptr<Candlestick>> candles;
 
+    PatternDetector detector;
+    detector.addPattern(std::make_unique<HangingManPattern>());
+    // Adicione outros padrões aqui conforme desejar
+
     while (true) {
         std::string msg = server.receiveMessage();
         if (msg.empty()) {
@@ -35,8 +41,18 @@ int main() {
             Candlestick candle = parseCandle(msg);
             candles.push_back(std::make_unique<Candlestick>(candle));
 
-            // Agora usamos o método estático para imprimir
             Candlestick::printList(candles);
+
+            auto detectedPatterns = detector.detect(candles);
+
+            if (!detectedPatterns.empty()) {
+                std::cout << "Padrões detectados:\n";
+                for (const auto& patternName : detectedPatterns) {
+                    std::cout << " - " << patternName << "\n";
+                }
+            } else {
+                std::cout << "Nenhum padrão detectado.\n";
+            }
 
         } catch (const std::exception& e) {
             std::cerr << "Erro ao processar candle: " << e.what() << "\n";

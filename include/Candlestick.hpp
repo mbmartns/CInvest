@@ -1,6 +1,8 @@
 // include/Candlestick.hpp
 #pragma once
 
+#include <iostream>
+
 #include <string>
 #include <cmath>
 #include <sstream>
