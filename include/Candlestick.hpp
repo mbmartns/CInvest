@@ -2,16 +2,13 @@
 #pragma once
 
 #include <iostream>
-
 #include <string>
 #include <cmath>
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
-using namespace std;
-
-using namespace std;
-
+#include <deque>
+#include <memory>
 
 // Classe base que representa um candle com todas as suas propriedades fundamentais
 class Candlestick {
@@ -48,13 +45,13 @@ public:
     // Sombra superior: parte acima do corpo
     double upperShadow() const {
         double upper = isBullish() ? high - close : high - open;
-        return max(0.0, upper);
+        return std::max(0.0, upper);
     }
 
     // Sombra inferior: parte abaixo do corpo
     double lowerShadow() const {
         double lower = isBullish() ? open - low : close - low;
-        return max(0.0, lower);
+        return std::max(0.0, lower);
     }
 
     // Porcentagem da sombra superior em relação ao corpo
@@ -69,16 +66,14 @@ public:
         return (body > 0) ? (lowerShadow() / body) * 100.0 : 0.0;
     }
 
-
     // Novo método estático para imprimir lista de candles
-    static void printList(const std::vector<std::unique_ptr<Candlestick>>& candles) {
+    static void printList(const std::deque<std::unique_ptr<Candlestick>>& candles) {
         std::cout << "=== Lista de Candles armazenados ===\n";
         for (size_t i = 0; i < candles.size(); ++i) {
             std::cout << "Candlestick #" << (i + 1) << candles[i]->describe() << "\n";
         }
     }
 
-    
     // Retorna uma string com todas as informações do candle formatadas
     std::string describe() const {
         std::ostringstream oss;

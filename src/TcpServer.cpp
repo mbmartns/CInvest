@@ -26,7 +26,7 @@ bool TcpServer::start() {
     if (bind(listenSock, (sockaddr*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) return false;
     if (listen(listenSock, SOMAXCONN) == SOCKET_ERROR) return false;
 
-    std::cout << "Servidor TCP aguardando conexão na porta " << port << "...\n";
+    std::cout << "Servidor TCP aguardando conexao na porta " << port << "...\n";
 
     clientSock = accept(listenSock, nullptr, nullptr);
     if (clientSock == INVALID_SOCKET) {
