@@ -8,6 +8,8 @@
 #include <algorithm>
 using namespace std;
 
+using namespace std;
+
 
 // Classe base que representa um candle com todas as suas propriedades fundamentais
 class Candlestick {
@@ -44,13 +46,13 @@ public:
     // Sombra superior: parte acima do corpo
     double upperShadow() const {
         double upper = isBullish() ? high - close : high - open;
-        return std::max(0.0, upper);
+        return max(0.0, upper);
     }
 
     // Sombra inferior: parte abaixo do corpo
     double lowerShadow() const {
         double lower = isBullish() ? open - low : close - low;
-        return std::max(0.0, lower);
+        return max(0.0, lower);
     }
 
     // Porcentagem da sombra superior em relação ao corpo
