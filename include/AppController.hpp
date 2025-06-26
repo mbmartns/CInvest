@@ -4,6 +4,7 @@
 #include "Candlestick.hpp"
 #include "PatternDetector.hpp"
 #include "patterns/HangingManPattern.hpp"
+#include "patterns/BearishHarami.hpp"
 #include <deque>
 #include <memory>
 #include <string>

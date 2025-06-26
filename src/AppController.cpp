@@ -4,6 +4,7 @@
 
 AppController::AppController() : server(5050) {
     detector.addPattern(std::make_unique<HangingManPattern>());
+    detector.addPattern(std::make_unique<BearishHaramiPattern>());
 }
 
 void AppController::run() {
