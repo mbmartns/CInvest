@@ -13,7 +13,7 @@ add_executable(CandleTCP
     src/TcpServer.cpp
     src/PatternDetector.cpp
     src/AppController.cpp
-    src/Candlestick.cpp    # só se você tiver um arquivo cpp separado para Candlestick
+    src/Candlestick.cpp 
 )
 
 # Biblioteca do Windows para sockets

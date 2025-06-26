@@ -1,8 +1,8 @@
 // include/patterns/HangingManPattern.hpp
 #pragma once
 
-#include <deque>  // necessário para std::deque
-#include <memory> // necessário para std::unique_ptr
+#include <deque> 
+#include <memory> 
 #include "../Pattern.hpp"
 
 class HangingManPattern : public Pattern {
@@ -14,7 +14,8 @@ public:
     bool detect(const std::deque<std::unique_ptr<Candlestick>>& candles) const override {
         if (candles.empty()) return false;
 
-        const auto& candle = candles.back(); // Último candle recebido
+        // Pegar exatamente o ultimo candle recebido
+        const auto& candle = candles.back();
 
         double body = candle->bodySize();
         double lowerShadow = candle->lowerShadow();
