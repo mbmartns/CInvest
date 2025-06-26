@@ -11,6 +11,10 @@ public:
         return "Hanging Man";
     }
 
+    std::string getDescription() const override {
+        return "É um candlestick com padrão de reversão de baixa, ou seja, um bom momento para vender. ";
+    }
+
     bool detect(const std::deque<std::unique_ptr<Candlestick>>& candles) const override {
         if (candles.empty()) return false;
 
