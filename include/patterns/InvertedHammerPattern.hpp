@@ -10,6 +10,15 @@ public:
     std::string getName() const override {
         return "Inverted Hammer";
     }
+    
+    std::string getDescription() const override {
+        return "O padrão Martelo Invertido sugere uma possível reversão de baixa para alta. "
+               "Ele indica que os compradores estão começando a ganhar força após uma sequência de quedas.";
+    }
+
+    std::string getStatus() const override {
+        return "Comprar";
+    }
 
     bool detect(const std::deque<std::unique_ptr<Candlestick>>& candles) const override {
         if (candles.empty()) return false;
@@ -19,20 +28,12 @@ public:
         double body = candle->bodySize();
         double lowerShadow = candle->lowerShadow();
         double upperShadow = candle->upperShadow();
+        double total = candle->totalRange();
 
-        // Critérios do Martelo Invertido
-        bool smallBody = body > 0 && body <= (candle->totalRange() * 0.2);
+        bool smallBody = body > 0 && body <= (total * 0.2);
         bool longUpperShadow = upperShadow > (2 * body);
-        bool smallLowerShadow = lowerShadow <= body * 0.20;
+        bool smallLowerShadow = lowerShadow <= (body * 0.2);
 
-        return smallBody && longUpperShadow && smallLowerShadow;    }
-
-    std::string getDescription() const {
-        return "O Martelo Invertido tem corpo pequeno, sombra superior longa (cerca de 2x o corpo) e sombra inferior pequena ou inexistente.";
-    }
-
-    std::string getJustification() const {
-        return "O padrão Martelo Invertido sugere possível reversão de baixa para alta. Indica que compradores começam a pressionar após quedas, "
-               "podendo ser um sinal de compra no início da transição para alta.";
+        return smallBody && longUpperShadow && smallLowerShadow;
     }
 };
