@@ -17,5 +17,5 @@ public:
     void addPattern(std::unique_ptr<Pattern> pattern);
 
     // Aplica todos os padrões à lista de candles e retorna os nomes detectados
-    std::vector<std::string> detect(const std::deque<std::unique_ptr<Candlestick>>& candles) const;
+    std::vector<const Pattern*> detect(const std::deque<std::unique_ptr<Candlestick>>& candles) const;
 };

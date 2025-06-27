@@ -5,6 +5,11 @@
 AppController::AppController() : server(5050) {
     detector.addPattern(std::make_unique<HangingManPattern>());
     detector.addPattern(std::make_unique<BearishHaramiPattern>());
+    detector.addPattern(std::make_unique<DojiPattern>());
+    detector.addPattern(std::make_unique<LongDayPattern>());
+    detector.addPattern(std::make_unique<ShortDayPattern>());
+    detector.addPattern(std::make_unique<MarubozuPattern>());
+    detector.addPattern(std::make_unique<PawnPattern>());
 }
 
 void AppController::run() {
@@ -29,12 +34,14 @@ void AppController::run() {
 
             Candlestick::printList(candles);
 
-            auto detected = detector.detect(candles);
+            auto detectedPatterns = detector.detect(candles);
 
-            if (!detected.empty()) {
+            if (!detectedPatterns.empty()) {
                 std::cout << "Padroes detectados:\n";
-                for (const auto& p : detected) {
-                    std::cout << " - " << p << "\n";
+                for (const auto& pattern : detectedPatterns) {
+                    std::cout << " - Nome: " << pattern->getName() << "\n";
+                    std::cout << "   Descrição: " << pattern->getDescription() << "\n";
+                    std::cout << "   Status: " << pattern->getStatus() << "\n\n";
                 }
             } else {
                 std::cout << "Nenhum padrao detectado.\n";

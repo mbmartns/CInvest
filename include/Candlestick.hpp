@@ -23,6 +23,10 @@ public:
     Candlestick(double open, double high, double low, double close)
         : open(open), high(high), low(low), close(close) {}
 
+    // Getters para acessar os valores do candle
+    double getOpen() const { return open; }
+    double getClose() const { return close; }
+    
     // Retorna o tipo do candle: true para alta, false para baixa
     bool isBullish() const {
         return close > open;

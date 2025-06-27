@@ -4,14 +4,18 @@
 #include <memory>
 #include "../Pattern.hpp"
 
-class HaramiDeTopoPattern : public Pattern {
+class BearishHaramiPattern : public Pattern {
 public:
     std::string getName() const override {
         return "Harami de Topo";
     }
 
     std::string getDescription() const override {
-        return "Padrão de reversão de baixa: três candles consecutivos - médio de alta, pequeno de baixa, grande de baixa.";
+        return "Um dos padrões de candle de reversão de baixa, ou seja, indica um bom momento de venda.";
+    }
+
+    std::string getStatus() const override {
+        return "Vender";
     }
 
     bool detect(const std::deque<std::unique_ptr<Candlestick>>& candles) const override {

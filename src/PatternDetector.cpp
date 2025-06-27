@@ -6,12 +6,15 @@ void PatternDetector::addPattern(std::unique_ptr<Pattern> pattern) {
     patterns.push_back(std::move(pattern));
 }
 
-std::vector<std::string> PatternDetector::detect(const std::deque<std::unique_ptr<Candlestick>>& candles) const {
-    std::vector<std::string> found;
+// signature no PatternDetector.hpp
+std::vector<const Pattern*> PatternDetector::detect(const std::deque<std::unique_ptr<Candlestick>>& candles) const {
+    std::vector<const Pattern*> detectedPatterns;
+
     for (const auto& pattern : patterns) {
         if (pattern->detect(candles)) {
-            found.push_back(pattern->getName());
+            detectedPatterns.push_back(pattern.get());
         }
     }
-    return found;
+
+    return detectedPatterns;
 }

@@ -15,6 +15,10 @@ public:
         return "É um candlestick com padrão de reversão de baixa, ou seja, um bom momento para vender. ";
     }
 
+    std::string getStatus() const override {
+        return "Vender";
+    }
+
     bool detect(const std::deque<std::unique_ptr<Candlestick>>& candles) const override {
         if (candles.empty()) return false;
 
