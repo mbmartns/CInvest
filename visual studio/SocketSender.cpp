@@ -15,7 +15,7 @@ static bool initialized = false;
 extern "C" {
 
     __declspec(dllexport)
-        bool InitConnection()
+    bool InitConnection()
     {
         if (initialized) return true;
 
@@ -46,7 +46,7 @@ extern "C" {
     }
 
     __declspec(dllexport)
-        void SendCandleData(double open, double high, double low, double close)
+    void SendCandleData(double open, double high, double low, double close)
     {
         if (!initialized) {
             if (!InitConnection()) return; // Tenta inicializar se ainda não foi
@@ -61,7 +61,31 @@ extern "C" {
     }
 
     __declspec(dllexport)
-        void CloseConnection()
+    const char* ReceiveCommand()
+    {
+        static char buffer[512];
+        if (!initialized) return "NONE";
+
+        // Define modo não bloqueante
+        u_long mode = 1;
+        ioctlsocket(sock, FIONBIO, &mode);
+
+        int bytesReceived = recv(sock, buffer, sizeof(buffer) - 1, 0);
+
+        // Volta ao modo bloqueante (opcional, pode deixar não bloqueante se quiser)
+        mode = 0;
+        ioctlsocket(sock, FIONBIO, &mode);
+
+        if (bytesReceived > 0) {
+            buffer[bytesReceived] = '\0';
+            return buffer;
+        }
+
+        return "NONE";
+    }
+
+    __declspec(dllexport)
+    void CloseConnection()
     {
         if (initialized) {
             closesocket(sock);
