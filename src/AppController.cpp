@@ -4,13 +4,24 @@
 
 AppController::AppController() : server(5050) {
     // Padrões de candlestick
-    detector.addPattern(std::make_unique<HangingManPattern>());
+    detector.addPattern(std::make_unique<BearishEngulfingPattern>());
     detector.addPattern(std::make_unique<BearishHaramiPattern>());
+    detector.addPattern(std::make_unique<BearishKickPattern>());
+    detector.addPattern(std::make_unique<BullishEngulfingPattern>());
+    detector.addPattern(std::make_unique<BullishHaramiPattern>());
+    detector.addPattern(std::make_unique<BullishKickPattern>());
+    detector.addPattern(std::make_unique<DarkCloudCoverPattern>());
     detector.addPattern(std::make_unique<DojiPattern>());
+    detector.addPattern(std::make_unique<HammerPattern>());
+    detector.addPattern(std::make_unique<HangingManPattern>());
+    detector.addPattern(std::make_unique<InvertedHammerPattern>());
     detector.addPattern(std::make_unique<LongDayPattern>());
-    detector.addPattern(std::make_unique<ShortDayPattern>());
     detector.addPattern(std::make_unique<MarubozuPattern>());
     detector.addPattern(std::make_unique<PawnPattern>());
+    detector.addPattern(std::make_unique<PiercingLinePattern>());
+    detector.addPattern(std::make_unique<ShootingStarPattern>());
+    detector.addPattern(std::make_unique<ShortDayPattern>());
+    detector.addPattern(std::make_unique<ThreeBlackCrowsPattern>());
 }
 
 void AppController::run() {
