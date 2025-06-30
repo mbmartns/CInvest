@@ -1,15 +1,14 @@
 // include/Candlestick.hpp
 #pragma once
 
+#include <iostream>
 #include <string>
 #include <cmath>
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
-using namespace std;
-
-using namespace std;
-
+#include <deque>
+#include <memory>
 
 // Classe base que representa um candle com todas as suas propriedades fundamentais
 class Candlestick {
@@ -24,6 +23,10 @@ public:
     Candlestick(double open, double high, double low, double close)
         : open(open), high(high), low(low), close(close) {}
 
+    // Getters para acessar os valores do candle
+    double getOpen() const { return open; }
+    double getClose() const { return close; }
+    
     // Retorna o tipo do candle: true para alta, false para baixa
     bool isBullish() const {
         return close > open;
@@ -46,13 +49,13 @@ public:
     // Sombra superior: parte acima do corpo
     double upperShadow() const {
         double upper = isBullish() ? high - close : high - open;
-        return max(0.0, upper);
+        return std::max(0.0, upper);
     }
 
     // Sombra inferior: parte abaixo do corpo
     double lowerShadow() const {
         double lower = isBullish() ? open - low : close - low;
-        return max(0.0, lower);
+        return std::max(0.0, lower);
     }
 
     // Porcentagem da sombra superior em relação ao corpo
@@ -65,6 +68,14 @@ public:
     double lowerShadowPercent() const {
         double body = bodySize();
         return (body > 0) ? (lowerShadow() / body) * 100.0 : 0.0;
+    }
+
+    // Novo método estático para imprimir lista de candles
+    static void printList(const std::deque<std::unique_ptr<Candlestick>>& candles) {
+        std::cout << "=== Lista de Candles armazenados ===\n";
+        for (size_t i = 0; i < candles.size(); ++i) {
+            std::cout << "Candlestick #" << (i + 1) << candles[i]->describe() << "\n";
+        }
     }
 
     // Retorna uma string com todas as informações do candle formatadas
