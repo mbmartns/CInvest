@@ -26,6 +26,8 @@ public:
     // Getters para acessar os valores do candle
     double getOpen() const { return open; }
     double getClose() const { return close; }
+    double getLow() const { return low; }
+    double getHigh() const { return close; }
     
     // Retorna o tipo do candle: true para alta, false para baixa
     bool isBullish() const {
