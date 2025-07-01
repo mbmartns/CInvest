@@ -1,4 +1,4 @@
-// File: C:\Users\mbmar\CInvest\frontend\trading-dashboard\app\page.tsx
+// File: C:\Users\Joao_\Desktop\Programação\CInvest-1\frontend\trading-dashboard\app\page.tsx
 import * as entry from '../../../app/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

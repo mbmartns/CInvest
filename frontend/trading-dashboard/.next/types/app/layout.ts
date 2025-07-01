@@ -1,4 +1,4 @@
-// File: C:\Users\mbmar\CInvest\frontend\trading-dashboard\app\layout.tsx
+// File: C:\Users\Joao_\Desktop\Programação\CInvest-1\frontend\trading-dashboard\app\layout.tsx
 import * as entry from '../../../app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

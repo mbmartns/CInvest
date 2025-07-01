@@ -297,7 +297,6 @@ export default function TradingDashboard() {
             </CardContent>
           </Card>
         </div>
-        <div className="bg-red-500 text-white">Teste</div> 
         {/* Gráfico de Candlesticks Simulado */}
         <Card>
           <CardHeader>
