@@ -296,7 +296,7 @@ export default function TradingDashboard() {
               <p className="text-sm text-gray-500">Robô operando</p>
             </CardContent>
           </Card>
-        </div>
+        </div> 
         {/* Gráfico de Candlesticks Simulado */}
         <Card>
           <CardHeader>
