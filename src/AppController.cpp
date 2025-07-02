@@ -1,6 +1,16 @@
 #include "../include/AppController.hpp"
 #include "../include/utils/CandleParser.hpp"
 #include <iostream>
+#include "utils/HttpSender.hpp"
+
+void sendCandleToFlask(const Candlestick& candle) {
+    std::string json =
+        "{\"open\":" + std::to_string(candle.getOpen()) +
+        ",\"high\":" + std::to_string(candle.getHigh()) +
+        ",\"low\":" + std::to_string(candle.getLow()) +
+        ",\"close\":" + std::to_string(candle.getClose()) + "}";
+    sendHttpPostToFlask(json);
+}
 
 AppController::AppController() : server(5050) {
     // Padrões de candlestick
@@ -45,6 +55,7 @@ void AppController::run() {
             // Processa o candle recebido
             auto candle = CandleParser::fromString(msg);
             candles.push_back(std::make_unique<Candlestick>(candle));
+            sendCandleToFlask(candle);
             
             // Mantém apenas os últimos 5 candles
             if (candles.size() > 5) {
