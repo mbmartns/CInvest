@@ -1,6 +1,15 @@
 #include "../include/AppController.hpp"
 #include "../include/utils/CandleParser.hpp"
 #include <iostream>
+#include "utils/HttpSender.hpp"
+
+void sendPatternToFlask(const std::string& name, const std::string& description, const std::string& status) {
+    std::string json =
+        "{\"name\":\"" + name +
+        "\",\"description\":\"" + description +
+        "\",\"status\":\"" + status + "\"}";
+    sendHttpPostToFlask(json); 
+}
 #include <vector>
 #include <string>
 
@@ -102,7 +111,6 @@ void AppController::run() {
             }
         }
 
-        // === Trata Candle (continua como antes) ===
         try {
             auto candle = CandleParser::fromString(msg);
             candles.push_back(std::make_unique<Candlestick>(candle));
@@ -116,22 +124,24 @@ void AppController::run() {
             auto detectedPatterns = detector.detect(candles);
             std::string decision = "";
 
-            if (!detectedPatterns.empty()) {
-                std::cout << "\n=== Padroes Detectados ===\n";
-                for (const auto& pattern : detectedPatterns) {
-                    std::cout << "Padrao: " << pattern->getName()
-                              << " | Status: " << pattern->getStatus() << "\n";
+            if (detectedPatterns.size() == 1) { 
+                std::cout << "\n=== Padrao Detectado ===\n";
+                const auto& pattern = detectedPatterns.front();
+                std::cout << "Padrao: " << pattern->getName() 
+                        << " | Status: " << pattern->getStatus() << "\n";
 
-                    if (pattern->getStatus() == "Vender") {
-                        decision = "0";
-                        break;
-                    } else if (pattern->getStatus() == "Comprar") {
-                        decision = "1";
-                        break;
-                    }
+                if (pattern->getStatus() == "Vender") {
+                    decision = "0"; // SELL
+                    sendPatternToFlask(pattern->getName(), pattern->getDescription(), pattern->getStatus());
                 }
-            } else {
+                else if (pattern->getStatus() == "Comprar") {
+                    decision = "1"; // BUY
+                    sendPatternToFlask(pattern->getName(), pattern->getDescription(), pattern->getStatus());
+                }
+            } else if (detectedPatterns.empty()) {
                 std::cout << "Nenhum padrao detectado.\n";
+            } else {
+                std::cout << "Mais de um padrao detectado. Nenhuma ação tomada.\n";
             }
 
             if (decision == "0" || decision == "1") {
