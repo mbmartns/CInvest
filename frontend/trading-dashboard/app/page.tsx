@@ -39,7 +39,7 @@ interface DailyStats {
 export default function TradingDashboard() {
   const [currentPrice] = useState(108800)
   const [patterns, setPatterns] = useState<Pattern[]>([])
-  const [orders] = useState<Order[]>([])
+  const [orders, setOrders] = useState<Order[]>([])
   const [dailyStats] = useState<DailyStats>({
     totalTrades: 0,
     winRate: 0,
@@ -86,6 +86,34 @@ export default function TradingDashboard() {
     return () => clearInterval(interval)
   }, [])
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetch("http://localhost:3001/api/order_opened")
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.type && data.price && data.volume && data.ticket) {
+            const newOrder: Order = {
+              id: data.ticket,
+              type: data.type === "1" || data.type.toLowerCase() === "buy" ? "buy" : "sell",
+              price: parseFloat(data.price),
+              time: new Date().toLocaleTimeString(),
+              justification: `Volume: ${data.volume}`,
+              status: "pending"
+            }
+            setOrders(prev => {
+              // Evita duplicatas consecutivas pelo ticket
+              if (prev.length > 0 && prev[0].id === newOrder.id) {
+                return prev
+              }
+              return [newOrder, ...prev.slice(0, 19)]
+            })
+          }
+        })
+        .catch(() => {})
+    }, 2000)
+    return () => clearInterval(interval)
+  }, [])
+  
   return (
     <div className="min-h-screen bg-gray-50 p-4">
       <div className="max-w-7xl mx-auto space-y-6">

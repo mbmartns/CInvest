@@ -2,6 +2,8 @@
 #include "../include/utils/CandleParser.hpp"
 #include <iostream>
 #include "utils/HttpSender.hpp"
+#include <vector>
+#include <string>
 
 void sendPatternToFlask(const std::string& name, const std::string& description, const std::string& status) {
     std::string json =
@@ -10,8 +12,15 @@ void sendPatternToFlask(const std::string& name, const std::string& description,
         "\",\"status\":\"" + status + "\"}";
     sendHttpPostToFlask(json); 
 }
-#include <vector>
-#include <string>
+
+void sendOrderOpenedToFlask(const std::string& tipo, const std::string& volume, const std::string& preco, const std::string& ticket) {
+    std::string json =
+        "{\"type\":\"" + tipo +
+        "\",\"volume\":\"" + volume +
+        "\",\"price\":\"" + preco +
+        "\",\"ticket\":\"" + ticket + "\"}";
+    sendHttpPostToFlask(json, "/api/order_opened"); // Usa sua função já existente
+}
 
 static std::vector<std::string> split(const std::string& s, char delimiter) {
     std::vector<std::string> tokens;
@@ -66,7 +75,7 @@ void AppController::run() {
             break;
         }
 
-        // === Trata mensagens informativas ===
+        // === Trata mensagens informativas === 
         size_t sepPos = msg.find('|');
         if (sepPos != std::string::npos) {
             std::string msgType = msg.substr(0, sepPos);
@@ -88,6 +97,7 @@ void AppController::run() {
                               << ", Volume: " << parts[1]
                               << ", Preço: " << parts[2]
                               << ", Ticket: " << parts[3] << "\n";
+                    sendOrderOpenedToFlask(parts[0], parts[1], parts[2], parts[3]);
                 } else {
                     std::cout << "[ORDER OPENED] Payload inválido: " << payload << "\n";
                 }
@@ -138,6 +148,8 @@ void AppController::run() {
                     decision = "1"; // BUY
                     sendPatternToFlask(pattern->getName(), pattern->getDescription(), pattern->getStatus());
                 }
+                sendPatternToFlask(pattern->getName(), pattern->getDescription(), pattern->getStatus());
+                
             } else if (detectedPatterns.empty()) {
                 std::cout << "Nenhum padrao detectado.\n";
             } else {
