@@ -67,27 +67,25 @@ void AppController::run() {
             auto detectedPatterns = detector.detect(candles);
             std::string decision = ""; 
 
-            if (!detectedPatterns.empty()) {
-                std::cout << "\n=== Padroes Detectados ===\n";
-                for (const auto& pattern : detectedPatterns) {
-                    std::cout << "Padrao: " << pattern->getName() 
-                              << " | Status: " << pattern->getStatus() << "\n";
+            if (detectedPatterns.size() == 1) { // Só toma decisão se houver exatamente 1 padrão
+                std::cout << "\n=== Padrao Detectado ===\n";
+                const auto& pattern = detectedPatterns.front();
+                std::cout << "Padrao: " << pattern->getName() 
+                        << " | Status: " << pattern->getStatus() << "\n";
 
-                    // Prioriza sinais de VENDA
-                    if (pattern->getStatus() == "Vender") {
-                        decision = "0"; // SELL
-                        sendPatternToFlask(pattern->getName(), pattern->getDescription(), pattern->getStatus());
-                        break;
-                    }
-                    else if (pattern->getStatus() == "Comprar") {
-                        decision = "1"; // BUY
-                        sendPatternToFlask(pattern->getName(), pattern->getDescription(), pattern->getStatus());
-                        break;
-                    }
-                    
+                if (pattern->getStatus() == "Vender") {
+                    decision = "0"; // SELL
+                    sendPatternToFlask(pattern->getName(), pattern->getDescription(), pattern->getStatus());
                 }
-            } else {
+                else if (pattern->getStatus() == "Comprar") {
+                    decision = "1"; // BUY
+                    sendPatternToFlask(pattern->getName(), pattern->getDescription(), pattern->getStatus());
+                }
+            } else if (detectedPatterns.empty()) {
                 std::cout << "Nenhum padrao detectado.\n";
+            } else {
+                std::cout << "Mais de um padrao detectado. Nenhuma ação tomada.\n";
+                // Não faz nada, nem envia sinal, nem envia padrão ao Flask
             }
 
             if (decision == "0" || decision == "1") {
