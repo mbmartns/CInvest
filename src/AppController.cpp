@@ -3,13 +3,12 @@
 #include <iostream>
 #include "utils/HttpSender.hpp"
 
-void sendCandleToFlask(const Candlestick& candle) {
+void sendPatternToFlask(const std::string& name, const std::string& description, const std::string& status) {
     std::string json =
-        "{\"open\":" + std::to_string(candle.getOpen()) +
-        ",\"high\":" + std::to_string(candle.getHigh()) +
-        ",\"low\":" + std::to_string(candle.getLow()) +
-        ",\"close\":" + std::to_string(candle.getClose()) + "}";
-    sendHttpPostToFlask(json);
+        "{\"name\":\"" + name +
+        "\",\"description\":\"" + description +
+        "\",\"status\":\"" + status + "\"}";
+    sendHttpPostToFlask(json); // Usa sua função já existente
 }
 
 AppController::AppController() : server(5050) {
@@ -55,7 +54,6 @@ void AppController::run() {
             // Processa o candle recebido
             auto candle = CandleParser::fromString(msg);
             candles.push_back(std::make_unique<Candlestick>(candle));
-            sendCandleToFlask(candle);
             
             // Mantém apenas os últimos 5 candles
             if (candles.size() > 5) {
@@ -78,12 +76,15 @@ void AppController::run() {
                     // Prioriza sinais de VENDA
                     if (pattern->getStatus() == "Vender") {
                         decision = "0"; // SELL
+                        sendPatternToFlask(pattern->getName(), pattern->getDescription(), pattern->getStatus());
                         break;
                     }
                     else if (pattern->getStatus() == "Comprar") {
                         decision = "1"; // BUY
+                        sendPatternToFlask(pattern->getName(), pattern->getDescription(), pattern->getStatus());
                         break;
                     }
+                    
                 }
             } else {
                 std::cout << "Nenhum padrao detectado.\n";

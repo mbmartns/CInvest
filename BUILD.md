@@ -9,3 +9,8 @@ python tcp_api.py
 
 node js instalado
 npm run dev
+
+Ordem de rodar
+1 - C++
+2 - Python
+3 - Front

@@ -38,7 +38,7 @@ inline bool sendHttpPostToFlask(const std::string& json) {
     }
 
     std::string request =
-        "POST /api/candle HTTP/1.1\r\n"
+        "POST /api/pattern HTTP/1.1\r\n"
         "Host: 127.0.0.1:3001\r\n"
         "Content-Type: application/json\r\n"
         "Content-Length: " + std::to_string(json.size()) + "\r\n"
