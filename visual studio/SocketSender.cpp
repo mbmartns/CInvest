@@ -6,6 +6,7 @@
 #include <sstream>
 #include <iostream>
 #include <cstring>
+#include <vector>
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -14,8 +15,7 @@ static bool initialized = false;
 
 extern "C" {
 
-    __declspec(dllexport)
-        bool InitConnection() {
+    __declspec(dllexport) bool InitConnection() {
         if (initialized) return true;
 
         WSADATA wsaData;
@@ -44,23 +44,59 @@ extern "C" {
         return true;
     }
 
-    __declspec(dllexport)
-        void SendCandleData(double open, double high, double low, double close) {
-        if (!initialized) {
-            if (!InitConnection()) return;
-        }
+    __declspec(dllexport) void SendCandleData(double open, double high, double low, double close) {
+        if (!initialized && !InitConnection()) return;
 
         std::ostringstream oss;
         oss.precision(5);
-        oss << std::fixed << open << "," << high << "," << low << "," << close;
+        oss << "CANDLE|" << std::fixed << open << "," << high << "," << low << "," << close;
         std::string message = oss.str();
 
         send(sock, message.c_str(), static_cast<int>(message.length()), 0);
     }
 
-    __declspec(dllexport)
-        const char* ReceiveCommand() {
-        static char buffer[16];  // você só espera "0", "1", ou "2"
+    __declspec(dllexport) void SendSymbolInfo(const char* symbol, const char* timeframe) {
+        if (!initialized && !InitConnection()) return;
+
+        std::string message = "SYMBOL|" + std::string(symbol) + "|" + std::string(timeframe);
+        send(sock, message.c_str(), static_cast<int>(message.length()), 0);
+    }
+
+    __declspec(dllexport) void SendOrderOpened(const char* type, double volume, double price, unsigned long ticket) {
+        if (!initialized && !InitConnection()) return;
+
+        std::ostringstream oss;
+        oss.precision(5);
+        oss << "OPEN|" << type << "|" << std::fixed << volume << "|" << price << "|" << ticket;
+        std::string message = oss.str();
+
+        send(sock, message.c_str(), static_cast<int>(message.length()), 0);
+    }
+
+    __declspec(dllexport) void SendOrderClosed(const char* type, double price, double profit, unsigned long ticket) {
+        if (!initialized && !InitConnection()) return;
+
+        std::ostringstream oss;
+        oss.precision(5);
+        oss << "CLOSE|" << type << "|" << std::fixed << price << "|" << profit << "|" << ticket;
+        std::string message = oss.str();
+
+        send(sock, message.c_str(), static_cast<int>(message.length()), 0);
+    }
+
+    __declspec(dllexport) void SendSessionProfit(double profit) {
+        if (!initialized && !InitConnection()) return;
+
+        std::ostringstream oss;
+        oss.precision(2);
+        oss << "PROFIT|" << std::fixed << profit;
+        std::string message = oss.str();
+
+        send(sock, message.c_str(), static_cast<int>(message.length()), 0);
+    }
+
+    __declspec(dllexport) const char* ReceiveCommand() {
+        static char buffer[16];
         memset(buffer, 0, sizeof(buffer));
 
         if (!initialized) return "NONE";
@@ -76,7 +112,7 @@ extern "C" {
         if (bytesReceived > 0) {
             buffer[bytesReceived] = '\0';
 
-            // 🧹 Limpa qualquer caractere de quebra de linha ou lixo no final
+            // Clean any trailing newline characters
             for (int i = 0; i < bytesReceived; ++i) {
                 if (buffer[i] == '\r' || buffer[i] == '\n') {
                     buffer[i] = '\0';
@@ -84,28 +120,20 @@ extern "C" {
                 }
             }
 
-            // DEBUG opcional:
-            std::cout << "📥 Comando recebido do C++: [" << buffer << "]\n";
-
-            // Garante que o que chegou é 0 ou 1
+            // Validate command
             if (strcmp(buffer, "0") == 0 || strcmp(buffer, "1") == 0) {
                 return buffer;
-            }
-            else {
-                return "NONE";  // Ignora comando inválido
             }
         }
 
         return "NONE";
     }
 
-    __declspec(dllexport)
-        void CloseConnection() {
+    __declspec(dllexport) void CloseConnection() {
         if (initialized) {
             closesocket(sock);
             WSACleanup();
             initialized = false;
         }
     }
-
 }

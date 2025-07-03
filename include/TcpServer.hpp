@@ -14,7 +14,7 @@ public:
 
     bool start();
     std::string receiveMessage();
-    bool sendMessage(const std::string& message);  // <-- ADICIONE ISSO
+    bool sendMessage(const std::string& message);
     void stop();
 
 private:

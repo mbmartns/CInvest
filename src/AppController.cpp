@@ -1,6 +1,23 @@
 #include "../include/AppController.hpp"
 #include "../include/utils/CandleParser.hpp"
 #include <iostream>
+#include <vector>
+#include <string>
+
+static std::vector<std::string> split(const std::string& s, char delimiter) {
+    std::vector<std::string> tokens;
+    size_t start = 0;
+    size_t end = s.find(delimiter);
+
+    while (end != std::string::npos) {
+        tokens.push_back(s.substr(start, end - start));
+        start = end + 1;
+        end = s.find(delimiter, start);
+    }
+    tokens.push_back(s.substr(start));
+    return tokens;
+}
+
 
 AppController::AppController() : server(5050) {
     // Padrões de candlestick
@@ -34,43 +51,82 @@ void AppController::run() {
 
     while (true) {
         std::string msg = server.receiveMessage();
-        
-        // Verifica se cliente desconectou
+
         if (msg.empty()) {
             std::cout << "Cliente desconectou ou erro na leitura.\n";
             break;
         }
 
+        // === Trata mensagens informativas ===
+        size_t sepPos = msg.find('|');
+        if (sepPos != std::string::npos) {
+            std::string msgType = msg.substr(0, sepPos);
+            std::string payload = msg.substr(sepPos + 1);
+
+            if (msgType == "SYMBOL") {
+                auto parts = split(payload, '|');
+                if (parts.size() == 2) {
+                    std::cout << "[SYMBOL] Símbolo: " << parts[0]
+                              << ", Timeframe: " << parts[1] << "\n";
+                } else {
+                    std::cout << "[SYMBOL] Payload inválido: " << payload << "\n";
+                }
+                continue;
+            } else if (msgType == "OPEN") {
+                auto parts = split(payload, '|');
+                if (parts.size() == 4) {
+                    std::cout << "[ORDER OPENED] Tipo: " << parts[0]
+                              << ", Volume: " << parts[1]
+                              << ", Preço: " << parts[2]
+                              << ", Ticket: " << parts[3] << "\n";
+                } else {
+                    std::cout << "[ORDER OPENED] Payload inválido: " << payload << "\n";
+                }
+                continue;
+            } else if (msgType == "CLOSE") {
+                auto parts = split(payload, '|');
+                if (parts.size() == 4) {
+                    std::cout << "[ORDER CLOSED] Tipo: " << parts[0]
+                              << ", Preço: " << parts[1]
+                              << ", Lucro: " << parts[2]
+                              << ", Ticket: " << parts[3] << "\n";
+                } else {
+                    std::cout << "[ORDER CLOSED] Payload inválido: " << payload << "\n";
+                }
+                continue;
+            } else if (msgType == "PROFIT") {
+                std::cout << "[SESSION PROFIT] Lucro total da sessão: " << payload << "\n";
+                continue;
+            } else if (msgType == "CANDLE") {
+                msg = payload; 
+            }
+        }
+
+        // === Trata Candle (continua como antes) ===
         try {
-            // Processa o candle recebido
             auto candle = CandleParser::fromString(msg);
             candles.push_back(std::make_unique<Candlestick>(candle));
-            
-            // Mantém apenas os últimos 5 candles
+
             if (candles.size() > 5) {
                 candles.pop_front();
             }
 
-            // Exibe candles atuais
             Candlestick::printList(candles);
 
-            // Detecta padrões
             auto detectedPatterns = detector.detect(candles);
-            std::string decision = ""; 
+            std::string decision = "";
 
             if (!detectedPatterns.empty()) {
                 std::cout << "\n=== Padroes Detectados ===\n";
                 for (const auto& pattern : detectedPatterns) {
-                    std::cout << "Padrao: " << pattern->getName() 
+                    std::cout << "Padrao: " << pattern->getName()
                               << " | Status: " << pattern->getStatus() << "\n";
 
-                    // Prioriza sinais de VENDA
                     if (pattern->getStatus() == "Vender") {
-                        decision = "0"; // SELL
+                        decision = "0";
                         break;
-                    }
-                    else if (pattern->getStatus() == "Comprar") {
-                        decision = "1"; // BUY
+                    } else if (pattern->getStatus() == "Comprar") {
+                        decision = "1";
                         break;
                     }
                 }
@@ -92,7 +148,7 @@ void AppController::run() {
 
         } catch (const std::exception& e) {
             std::cerr << "Erro ao processar candle: " << e.what() << "\n";
-            server.sendMessage("2"); // Código de erro
+            server.sendMessage("2");
         }
     }
 
