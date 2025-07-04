@@ -129,7 +129,7 @@ void AppController::run() {
                 candles.pop_front();
             }
 
-            Candlestick::printList(candles);
+            // Candlestick::printList(candles);
 
             auto detectedPatterns = detector.detect(candles);
             std::string decision = "";
