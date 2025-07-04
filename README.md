@@ -12,19 +12,24 @@ O **CInvest** é uma aplicação de apoio a investimentos automatizados que se c
 ## Funcionalidades
 Abaixo está uma lista não extensiva das principais funcionalidades suportadas na versão 1.0.0 do CInvest.
 
-
 - Extração de dados OHLC (Open, High, Low, Close) dos candles
 - Identificação de padrões técnicos (Hammer, Doji, Engulfing)
 - Envio de ordens de compra e venda com base nos padrões detectados
 - Exibição dos resultados das análises e decisões de trading
 - Arquitetura modular com aplicação de Programação Orientada a Objetos
 
-
 ## Estrutura Organizacional
 (Adicionar aqui a estrutura de pastas do Código)
 
-
-
-
 ## Guia para build local do sistema
 Para ajudar a fazer a build e setup local do sistema, o CInvest tem uma [BUILD.md]
+
+## Autores do Projeto
+- Itallo Augusto
+- João Antônio
+- Maria Beatriz
+- Lucas Américo
+
+## Licença
+
+Este projeto está licenciado sob a Licença GNU General Public License v3.0 - veja o arquivo [LICENSE.md](LICENSE) para detalhes.

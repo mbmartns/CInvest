@@ -4,6 +4,9 @@ Ordem de Execução
 3 - C++
 
 Comandos para rodar o Projeto : 
+g++ -std=c++17 -o cinvest.exe src/main.cpp src/TcpServer.cpp src/PatternDetector.cpp src/AppController.cpp src/utils/CandleParser.cpp -lws2_32
+.\cinvest.exe
+mudar o dll no libraries, IDE do Meta trader
 
 .\start_project.bat
 Que faz com que :
