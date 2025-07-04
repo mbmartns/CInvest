@@ -28,7 +28,7 @@ inline bool sendHttpPostToFlask(const std::string& json) {
 
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_port = htons(port);
-    inet_pton(AF_INET, hostname, &serverAddr.sin_addr);
+    serverAddr.sin_addr.s_addr = inet_addr(hostname);
 
     if (connect(sock, (SOCKADDR*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) {
         std::cerr << "Connection failed\n";
