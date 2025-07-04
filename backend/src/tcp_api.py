@@ -1,6 +1,6 @@
 # tcp_api.py
-from flask import Flask, jsonify, request
-from flask_cors import CORS
+from flask import Flask, jsonify, request # type: ignore
+from flask_cors import CORS # type: ignore
 
 app = Flask(__name__)
 CORS(app)
@@ -44,7 +44,25 @@ def post_order_opened():
 def get_order_opened():
     return jsonify(order_opened)
 
+symbol_info = {}
+
+@app.route("/api/symbol", methods=["POST"])
+def post_symbol():
+    global symbol_info
+    data = request.get_json()
+    if not data:
+        return {"error": "No data"}, 400
+    for key in ["symbol", "timeframe"]:
+        if key not in data:
+            return {"error": f"Missing {key}"}, 400
+    symbol_info = {k: str(data[k]) for k in ["symbol", "timeframe"]}
+    print("Símbolo recebido via POST:", symbol_info)
+    return {"status": "ok"}
+
+@app.route("/api/symbol", methods=["GET"])
+def get_symbol():
+    return jsonify(symbol_info)
+
 
 if __name__ == "__main__":
     app.run(port=3001)
-

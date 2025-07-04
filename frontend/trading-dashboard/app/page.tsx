@@ -42,6 +42,7 @@ export default function TradingDashboard() {
   const [currentPrice] = useState(108800)
   const [patterns, setPatterns] = useState<Pattern[]>([])
   const [orders, setOrders] = useState<Order[]>([])
+  const [symbolInfo, setSymbolInfo] = useState<{ symbol: string; timeframe: string } | null>(null);
   const [dailyStats] = useState<DailyStats>({
     totalTrades: 0,
     winRate: 0,
@@ -49,6 +50,11 @@ export default function TradingDashboard() {
     bestTrade: 0,
     worstTrade: 0,
   })
+
+  function afterUnderscore(str: string) {
+    const idx = str.indexOf("_");
+    return idx !== -1 ? str.substring(idx + 1) : str;
+  }
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("pt-BR", {
@@ -136,6 +142,20 @@ export default function TradingDashboard() {
     return () => clearInterval(interval)
   }, [])
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetch("http://localhost:3001/api/symbol")
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.symbol && data.timeframe) {
+            setSymbolInfo({ symbol: data.symbol, timeframe: data.timeframe });
+          }
+        })
+        .catch(() => {});
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-50 p-4">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -159,8 +179,7 @@ export default function TradingDashboard() {
               <CardTitle className="text-sm font-medium text-gray-600">Par de Moedas</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">BTC/USD</div>
-              <p className="text-sm text-gray-500">Bitcoin / Dólar Americano</p>
+              <div className="text-2xl font-bold"> {symbolInfo ? afterUnderscore(symbolInfo.symbol) : "—"} </div>
             </CardContent>
           </Card>
           <Card>
@@ -168,8 +187,7 @@ export default function TradingDashboard() {
               <CardTitle className="text-sm font-medium text-gray-600">Timeframe</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">M1</div>
-              <p className="text-sm text-gray-500">1 Minuto</p>
+              <div className="text-2xl font-bold"> {symbolInfo ? afterUnderscore(symbolInfo.timeframe) : "—"} </div>
             </CardContent>
           </Card>
           <Card>

@@ -22,6 +22,13 @@ void sendOrderOpenedToFlask(const std::string& tipo, const std::string& volume, 
     sendHttpPostToFlask(json, "/api/order_opened"); // Usa sua função já existente
 }
 
+void sendSymbolToFlask(const std::string& symbol, const std::string& timeframe) {
+    std::string json =
+        "{\"symbol\":\"" + symbol +
+        "\",\"timeframe\":\"" + timeframe + "\"}";
+    sendHttpPostToFlask(json, "/api/symbol");
+}
+
 static std::vector<std::string> split(const std::string& s, char delimiter) {
     std::vector<std::string> tokens;
     size_t start = 0;
@@ -86,6 +93,7 @@ void AppController::run() {
                 if (parts.size() == 2) {
                     std::cout << "[SYMBOL] Símbolo: " << parts[0]
                               << ", Timeframe: " << parts[1] << "\n";
+                    sendSymbolToFlask(parts[0], parts[1]);
                 } else {
                     std::cout << "[SYMBOL] Payload inválido: " << payload << "\n";
                 }
