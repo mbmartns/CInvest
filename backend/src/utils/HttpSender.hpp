@@ -7,7 +7,7 @@
 
 #pragma comment(lib, "ws2_32.lib")
 
-inline bool sendHttpPostToFlask(const std::string& json) {
+inline bool sendHttpPostToFlask(const std::string& json, const std::string& endpoint = "/api/pattern") {
     WSADATA wsaData;
     SOCKET sock = INVALID_SOCKET;
     struct sockaddr_in serverAddr;
@@ -38,7 +38,7 @@ inline bool sendHttpPostToFlask(const std::string& json) {
     }
 
     std::string request =
-        "POST /api/pattern HTTP/1.1\r\n"
+        "POST " + endpoint + " HTTP/1.1\r\n"
         "Host: 127.0.0.1:3001\r\n"
         "Content-Type: application/json\r\n"
         "Content-Length: " + std::to_string(json.size()) + "\r\n"

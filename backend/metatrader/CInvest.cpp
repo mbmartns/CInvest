@@ -101,7 +101,7 @@ void OnTick()
          cmd = ReceiveCommand();
          if(cmd == "0" || cmd == "1")
             break;
-         Sleep(200);
+         Sleep(100);
       }
 
       PrintFormat("📩 Comando recebido do DLL: %s", cmd);

@@ -8,9 +8,7 @@ O **CInvest** é uma aplicação de apoio a investimentos automatizados que se c
 
 ## Tecnologias Escolhidas
 | Tecnologia | Descrição | Justificativa para o Uso |
-|-------------|-----------|---------------------------|
-| C++ | Linguagem principal do projeto | Alta performance, controle de recursos e forte suporte à Programação Orientada a Objetos |
-
+@@ -14,22 +14,17 @@ O projeto foi pensado como um exercício completo de desenvolvimento em equipe,
 ## Funcionalidades
 Abaixo está uma lista não extensiva das principais funcionalidades suportadas na versão 1.0.0 do CInvest.
 
