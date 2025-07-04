@@ -1,4 +1,4 @@
-Ordem de rodar
+Ordem de Execução
 1 - Frontend
 2 - Python
 3 - C++

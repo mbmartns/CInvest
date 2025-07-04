@@ -10,11 +10,11 @@
 #include <Trade/DealInfo.mqh>
 
 
-input ENUM_TIMEFRAMES Timeframe = PERIOD_CURRENT;
+input ENUM_TIMEFRAMES Timeframe = PERIOD_M1;
 input double Volume = 0.1;
-input int StopLossPoints = 200;
-input int TakeProfitPoints = 300;
-input int TrailingStopPoints = 50;
+input int StopLossPoints = 3000;
+input int TakeProfitPoints = 3000;
+input int TrailingStopPoints = 600;
 input int TrailingTriggerPoints = 100;
 input ulong MagicNumber = 123456;
 
