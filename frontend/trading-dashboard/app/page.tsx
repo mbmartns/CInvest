@@ -16,6 +16,7 @@ interface Pattern {
   confidence: number
   time: string
   description: string
+  status: string // Adicionado para capturar o status da API
 }
 
 interface Order {
@@ -26,6 +27,7 @@ interface Order {
   justification: string
   status: "pending" | "profit" | "loss"
   pnl?: number
+  ticket: string // Adicionado para capturar o ticket da API
 }
 
 interface DailyStats {
@@ -47,7 +49,6 @@ export default function TradingDashboard() {
     bestTrade: 0,
     worstTrade: 0,
   })
-  const [isConnected] = useState(true)
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("pt-BR", {
@@ -57,11 +58,25 @@ export default function TradingDashboard() {
     }).format(value)
   }
 
+  // Função para determinar a cor do padrão baseado no status
+  const getPatternVariant = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "comprar":
+        return "default" // Verde
+      case "vender":
+        return "destructive" // Vermelho
+      case "neutro":
+        return "secondary" // Branco/Cinza
+      default:
+        return "secondary"
+    }
+  }
+
   useEffect(() => {
     const interval = setInterval(() => {
       fetch("http://localhost:3001/api/pattern")
-        .then(res => res.json())
-        .then(data => {
+        .then((res) => res.json())
+        .then((data) => {
           if (data && data.name) {
             const newPattern: Pattern = {
               id: Date.now().toString(),
@@ -70,10 +85,15 @@ export default function TradingDashboard() {
               confidence: 100,
               time: new Date().toLocaleTimeString(),
               description: data.description,
+              status: data.status, // Captura o status da API
             }
-            setPatterns(prev => {
+            setPatterns((prev) => {
               // Evita duplicatas consecutivas
-              if (prev.length > 0 && prev[0].name === newPattern.name && prev[0].description === newPattern.description) {
+              if (
+                prev.length > 0 &&
+                prev[0].name === newPattern.name &&
+                prev[0].description === newPattern.description
+              ) {
                 return prev
               }
               return [newPattern, ...prev.slice(0, 19)] // mantém só os 20 mais recentes
@@ -89,18 +109,19 @@ export default function TradingDashboard() {
   useEffect(() => {
     const interval = setInterval(() => {
       fetch("http://localhost:3001/api/order_opened")
-        .then(res => res.json())
-        .then(data => {
+        .then((res) => res.json())
+        .then((data) => {
           if (data && data.type && data.price && data.volume && data.ticket) {
             const newOrder: Order = {
               id: data.ticket,
-              type: data.type === "1" || data.type.toLowerCase() === "buy" ? "buy" : "sell",
-              price: parseFloat(data.price),
+              type: data.type === "B" || data.type.toLowerCase() === "buy" ? "buy" : "sell",
+              price: Number.parseFloat(data.price),
               time: new Date().toLocaleTimeString(),
               justification: `Volume: ${data.volume}`,
-              status: "pending"
+              status: "pending",
+              ticket: data.ticket, // Captura o ticket da API
             }
-            setOrders(prev => {
+            setOrders((prev) => {
               // Evita duplicatas consecutivas pelo ticket
               if (prev.length > 0 && prev[0].id === newOrder.id) {
                 return prev
@@ -111,22 +132,22 @@ export default function TradingDashboard() {
         })
         .catch(() => {})
     }, 2000)
+
     return () => clearInterval(interval)
   }, [])
-  
+
   return (
     <div className="min-h-screen bg-gray-50 p-4">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Trading Bot Dashboard</h1>
-            <p className="text-gray-600">Monitoramento em tempo real do robô automatizado</p>
+            <h1 className="text-3xl font-bold text-gray-900">CInvest Dashboard</h1>
           </div>
           <div className="flex items-center space-x-4">
-            <Badge variant={isConnected ? "default" : "destructive"} className="px-3 py-1">
+            <Badge variant="default" className="px-3 py-1">
               <Activity className="w-4 h-4 mr-1" />
-              {isConnected ? "Conectado" : "Desconectado"}
+              Conectado
             </Badge>
           </div>
         </div>
@@ -252,23 +273,9 @@ export default function TradingDashboard() {
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center space-x-2">
                               <Badge variant={order.type === "buy" ? "default" : "destructive"}>
-                                {order.type === "buy" ? "COMPRA" : "VENDA"}
+                                {order.type === "buy" ? "COMPRAR" : "VENDER"}
                               </Badge>
-                              <Badge
-                                variant={
-                                  order.status === "pending"
-                                    ? "secondary"
-                                    : order.status === "profit"
-                                      ? "default"
-                                      : "destructive"
-                                }
-                              >
-                                {order.status === "pending"
-                                  ? "Pendente"
-                                  : order.status === "profit"
-                                    ? "Lucro"
-                                    : "Prejuízo"}
-                              </Badge>
+                              <Badge variant="outline">Ticket: {order.ticket}</Badge>
                               {order.pnl && (
                                 <span
                                   className={`text-sm font-medium ${order.pnl > 0 ? "text-green-600" : "text-red-600"}`}
@@ -314,17 +321,7 @@ export default function TradingDashboard() {
                         <div key={pattern.id} className="border rounded-lg p-4">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center space-x-2">
-                              <Badge
-                                variant={
-                                  pattern.type === "bullish"
-                                    ? "default"
-                                    : pattern.type === "bearish"
-                                      ? "destructive"
-                                      : "secondary"
-                                }
-                              >
-                                {pattern.name}
-                              </Badge>
+                              <Badge variant={getPatternVariant(pattern.status)}>{pattern.name}</Badge>
                             </div>
                             <div className="flex items-center text-sm text-gray-500">
                               <Clock className="w-4 h-4 mr-1" />
