@@ -10,6 +10,9 @@ https://youtu.be/ktDbGtygCtM
 ## Link para Relatório
 https://docs.google.com/document/d/1pC6FxgHunRGRcPO9eChuHRpOAgbJGb9q5wam18vwpaw/edit?pli=1&tab=t.0
 
+## Link para o repositório
+https://github.com/mbmartns/CInvest
+
 ## Tecnologias Escolhidas
 | Tecnologia | Descrição | Justificativa para o Uso |
 @@ -14,22 +14,17 @@ O projeto foi pensado como um exercício completo de desenvolvimento em equipe,
