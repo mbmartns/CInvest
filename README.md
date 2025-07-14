@@ -7,6 +7,9 @@ O **CInvest** é uma aplicação de apoio a investimentos automatizados que se c
 ## Link Para vídeo explicativo
 https://youtu.be/ktDbGtygCtM
 
+## Link para Relatório
+https://docs.google.com/document/d/1pC6FxgHunRGRcPO9eChuHRpOAgbJGb9q5wam18vwpaw/edit?pli=1&tab=t.0
+
 ## Tecnologias Escolhidas
 | Tecnologia | Descrição | Justificativa para o Uso |
 @@ -14,22 +14,17 @@ O projeto foi pensado como um exercício completo de desenvolvimento em equipe,
