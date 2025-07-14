@@ -88,9 +88,6 @@ Frontend	React.js	Interface do usuário
 Backend	C++	Lógica de negócio e integração
 Plataforma	MetaTrader	Análise e execução de trades
 
-## Guia para build local do sistema
-Para ajudar a fazer a build e setup local do sistema, o CInvest tem uma [BUILD.md]
-
 ## Autores do Projeto
 - Itallo Augusto
 - João Antônio
