@@ -4,7 +4,8 @@
 O **CInvest** é uma aplicação de apoio a investimentos automatizados que se conecta ao MetaTrader 5 para receber dados de candles em tempo real e, com base em técnicas de análise técnica, identifica padrões gráficos clássicos, como martelo, engolfo e outros. Utilizando programação orientada a objetos em C++, o sistema realiza decisões automatizadas de compra e venda, funcionando como um robô de investimentos. Além disso, o CInvest também possui um papel educacional: ao detectar um padrão, ele fornece uma explicação clara sobre o significado daquele candle, que é exibida no frontend, auxiliando o usuário a aprender análise técnica enquanto opera.
 
 ![cinvest](https://github.com/user-attachments/assets/68b567d6-8586-42d6-b2d4-e3f5a99fc32b)
-
+## Link Para vídeo explicativo
+https://youtu.be/ktDbGtygCtM
 
 ## Tecnologias Escolhidas
 | Tecnologia | Descrição | Justificativa para o Uso |
